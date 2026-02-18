@@ -67,6 +67,21 @@ pip install flash-attn --no-build-isolation
 ```
 
 
+## ⚠️ Important: `attn_mode` Configuration
+
+> **You MUST change the `attn_mode` setting depending on whether you are training or running inference.**
+> Since LingBot-VA is loaded via `from_pretrained`, this parameter is read from the model folder's **`transformer/config.json`**.
+> You need to **manually edit** this file before launching.
+>
+> | Mode | `attn_mode` value | Notes |
+> |---|---|---|
+> | **Training** | `"flex"` | Required for training. **Will not work** for inference. |
+> | **Inference / Evaluation** | `"torch"` or `"flashattn"` | Required for inference. `"flex"` will cause errors at eval time. |
+>
+> **How to change:** Open `<your-model-path>/transformer/config.json`, find the `"attn_mode"` field, and set it to the appropriate value.
+
+---
+
 ## Deploying LingBot-VA for Inference
 LingBot-VA supports both standalone execution and Server-Client architecture which separates the model environment from simulation. By isolating dependencies, the design avoids package clashes and supports distributed inference on GPUs, clusters, and other devices.
 
