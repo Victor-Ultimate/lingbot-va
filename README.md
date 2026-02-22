@@ -129,7 +129,7 @@ h5py
 # For Description Generation
 azure==4.0.0
 azure-ai-inference
-pyglet<2
+pyglet<2    
 wandb
 moviepy
 imageio
