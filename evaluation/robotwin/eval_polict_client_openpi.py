@@ -218,7 +218,10 @@ def save_comparison_video(real_obs_list, imagined_video, action_history, save_pa
         def resize_h(img, h):
             if img.shape[0] != h:
                 w = int(img.shape[1] * h / img.shape[0])
-                return cv2.resize(img, (w, h))
+                img = cv2.resize(img, (w, h))
+            img = np.ascontiguousarray(img)
+            if img.dtype != np.uint8:
+                img = (img * 255).astype(np.uint8)
             return img
 
         row_real = np.hstack([
@@ -227,8 +230,7 @@ def save_comparison_video(real_obs_list, imagined_video, action_history, save_pa
             resize_h(cam_right, base_h)
         ])
         
-        if row_real.dtype != np.uint8:
-            row_real = (row_real * 255).astype(np.uint8)
+        row_real = np.ascontiguousarray(row_real)
 
         row_real = add_title_bar(row_real, "Real Observation (High / Left / Right)")
 
@@ -248,8 +250,10 @@ def save_comparison_video(real_obs_list, imagined_video, action_history, save_pa
             cv2.putText(row_imagined, "Coming soon", (target_width//2 - 100, 150), 
                         cv2.FONT_HERSHEY_SIMPLEX, 1, (100, 100, 100), 2)
 
+        row_imagined = np.ascontiguousarray(row_imagined)
         row_imagined = add_title_bar(row_imagined, "Imagined Video Stream")
         full_frame = np.vstack([row_real, row_imagined])
+        full_frame = np.ascontiguousarray(full_frame)
         final_frames.append(full_frame)
 
     imageio.mimsave(save_path, final_frames, fps=fps)
